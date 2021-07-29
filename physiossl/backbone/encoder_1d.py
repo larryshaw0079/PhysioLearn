@@ -11,6 +11,17 @@ import torch.nn as nn
 
 
 class R1DBlock(nn.Module):
+    """
+    The basic block of the 1d convolutional network
+
+    Attributes
+    ----------
+
+    Methods
+    -------
+
+    """
+
     def __init__(self, in_channel, out_channel, kernel_size=7, stride=1):
         super(R1DBlock, self).__init__()
 

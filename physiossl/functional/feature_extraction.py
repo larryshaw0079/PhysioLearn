@@ -4,9 +4,16 @@
 @Software: PyCharm
 @Desc    : 
 """
-import torch
 from torch import Tensor
 
 
 def spectrogram(signal: Tensor):
+    pass
+
+
+def power_spectral_density(signal: Tensor):
+    pass
+
+
+def differential_entropy(signal: Tensor):
     pass
