@@ -39,7 +39,7 @@ class SleepEDF39(SleepDataset):
                 extract_archive(os.path.join(root, 'raw', 'sleep-edf-database-1.0.0.zip'))
 
     def __check_integrity(self):
-        pass
+        return False
 
     def __preprocess(self):
         pass
