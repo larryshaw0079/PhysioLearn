@@ -19,6 +19,9 @@ from .utils import standardize_tensor
 
 
 class SleepEDFDataset(Dataset):
+    num_subject = 153
+    fs = 100
+
     def __init__(self, data_path: str, num_seq: int, subject_list: List = None, modal='eeg', return_idx: bool = False,
                  transform: nn.Module = None, verbose: bool = True, standardize: str = 'none'):
         assert isinstance(subject_list, list)
@@ -51,9 +54,7 @@ class SleepEDFDataset(Dataset):
             if standardize == 'none':
                 recordings *= 1e6
             elif standardize == 'standard':
-                recordings_min = np.expand_dims(recordings.min(axis=-1), axis=-1)
-                recordings_max = np.expand_dims(recordings.max(axis=-1), axis=-1)
-                recordings = (recordings - recordings_min) / (recordings_max - recordings_min)
+                recordings = standardize_tensor(recordings, dim=-1)
             else:
                 raise ValueError
 
