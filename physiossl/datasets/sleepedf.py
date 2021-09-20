@@ -5,53 +5,91 @@
 @Desc    : 
 """
 import os
-from pathlib import Path
-from typing import Union
+import warnings
+from typing import List
 
-from .sleep_dataset import SleepDataset
-from .utils import download_url, extract_archive
+import numpy as np
+import scipy.io as sio
+import torch
+import torch.nn as nn
+from tqdm.std import tqdm
+from torch.utils.data import Dataset
+
+from .utils import standardize_tensor
 
 
-class SleepEDF39(SleepDataset):
-    """
-    SleepEDF39 dataset
+class SleepEDFDataset(Dataset):
+    def __init__(self, data_path: str, num_seq: int, subject_list: List = None, modal='eeg', return_idx: bool = False,
+                 transform: nn.Module = None, verbose: bool = True, standardize: str = 'none'):
+        assert isinstance(subject_list, list)
+        assert modal in ['eeg', 'pps', 'all']
 
-    Attributes
-    ----------
+        self.data_path = data_path
+        self.transform = transform
+        self.patients = subject_list
+        self.modal = modal
+        self.return_idx = return_idx
 
-    Methods
-    -------
-    """
-    url = 'https://physionet.org/static/published-projects/sleep-edf/sleep-edf-database-1.0.0.zip'
-    meta = {
-        'md5': 'd499251742e5b7e044820576268a481e'
-    }
+        self.data = []
+        self.labels = []
 
-    def __init__(self, root: Union[str, Path], url: str = None, download: bool = False):
-        if url is None:
-            url = self.url
-
-        if download:
-            if self.__check_integrity():
-                print('Files already downloaded and verified')
+        for i, patient in enumerate(subject_list):
+            if verbose:
+                print(f'[INFO] Processing the {i + 1}-th patient {patient}...')
+            data = np.load(os.path.join(data_path, patient))
+            if modal == 'eeg':
+                recordings = np.stack([data['eeg_fpz_cz'], data['eeg_pz_oz']], axis=1)
+            elif modal == 'pps':
+                recordings = np.stack([data['emg'], data['eog']], axis=1)
+            elif modal == 'all':
+                recordings = np.stack([data['eeg_fpz_cz'], data['eeg_pz_oz'],
+                                       data['emg'], data['eog']], axis=1)
             else:
-                download_url(url, os.path.join(root, 'raw'), md5=self.meta['md5'])
-                extract_archive(os.path.join(root, 'raw', 'sleep-edf-database-1.0.0.zip'))
+                raise ValueError
 
-    def __check_integrity(self):
-        return False
+            # print(f'[INFO] Convert the unit from V to uV...')
+            if standardize == 'none':
+                recordings *= 1e6
+            elif standardize == 'standard':
+                recordings_min = np.expand_dims(recordings.min(axis=-1), axis=-1)
+                recordings_max = np.expand_dims(recordings.max(axis=-1), axis=-1)
+                recordings = (recordings - recordings_min) / (recordings_max - recordings_min)
+            else:
+                raise ValueError
 
-    def __preprocess(self):
-        pass
+            annotations = data['annotation']
 
+            recordings = recordings[:(recordings.shape[0] // num_seq) * num_seq].reshape(-1, num_seq,
+                                                                                         *recordings.shape[1:])
+            annotations = annotations[:(annotations.shape[0] // num_seq) * num_seq].reshape(-1, num_seq)
 
-class SleepEDF153(SleepDataset):
-    """"""
-    url = 'https://physionet.org/static/published-projects/sleep-edfx/sleep-edf-database-expanded-1.0.0.zip'
-    md5 = '30b79d7c3607e6d021d0c16ff346842a'
+            assert recordings.shape[:2] == annotations.shape[:2]
 
-    def __init__(self, download: bool = False):
-        pass
+            self.data.append(recordings)
+            self.labels.append(annotations)
 
-    def __preprocess(self):
-        pass
+        self.data = np.concatenate(self.data)
+        self.labels = np.concatenate(self.labels)
+        self.idx = np.arange(self.data.shape[0] * self.data.shape[1]).reshape(-1, self.data.shape[1])
+        self.full_shape = self.data[0].shape
+
+    def __getitem__(self, item):
+        x = self.data[item]
+        y = self.labels[item]
+
+        x = x.astype(np.float32)
+        y = y.astype(np.long)
+
+        if self.transform is not None:
+            x = self.transform(x)
+
+        x = torch.from_numpy(x)
+        y = torch.from_numpy(y)
+
+        if self.return_idx:
+            return x, y, torch.from_numpy(self.idx[item].astype(np.long))
+        else:
+            return x, y
+
+    def __len__(self):
+        return len(self.data)

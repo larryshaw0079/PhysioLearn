@@ -22,8 +22,9 @@ class DEAPDataset(Dataset):
     fs = 128
 
     def __init__(self, data_path: str, num_seq: int, subject_list: List, label_dim: int = 0, modal: str = 'eeg',
-                 transform: nn.Module = None, standardize: str = 'none'):
+                 return_idx: bool = False, transform: nn.Module = None, standardize: str = 'none'):
         self.label_dim = label_dim
+        self.return_idx = return_idx
         self.transform = transform
 
         assert modal in ['eeg', 'pps', 'all']
@@ -84,6 +85,8 @@ class DEAPDataset(Dataset):
 
         self.data = all_data
         self.labels = all_labels
+        self.idx = np.arange(self.data.shape[0] * self.data.shape[1]).reshape(-1, self.data.shape[1])
+        self.full_shape = self.data[0].shape
 
     def __getitem__(self, item):
         x = self.data[item].astype(np.float32)
@@ -94,7 +97,13 @@ class DEAPDataset(Dataset):
         if self.transform is not None:
             x = self.transform(x)
 
-        return torch.from_numpy(x), torch.from_numpy(y)
+        x = torch.from_numpy(x)
+        y = torch.from_numpy(y)
+
+        if self.return_idx:
+            return x, y, torch.from_numpy(self.idx[item].astype(np.long))
+        else:
+            return x, y
 
     def __len__(self):
         return len(self.data)

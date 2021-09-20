@@ -22,10 +22,11 @@ class AMIGOSDataset(Dataset):
     num_subject = 40
     fs = 128
 
-    def __init__(self, data_path, num_seq, subject_list: List, label_dim=0, modal='eeg', transform=None,
-                 standardize='none'):
+    def __init__(self, data_path: str, num_seq: int, subject_list: List, label_dim: int = 0, modal: str = 'eeg',
+                 return_idx: bool = False, transform: nn.Module = None, standardize: str = 'none'):
         self.transform = transform
         self.label_dim = label_dim
+        self.return_idx = return_idx
 
         assert modal in ['eeg', 'pps', 'all']
 
@@ -47,9 +48,7 @@ class AMIGOSDataset(Dataset):
                 if standardize == 'none':
                     pass
                 elif standardize == 'standard':
-                    trial_data_min = np.expand_dims(trial_data.min(axis=0), axis=0)
-                    trial_data_max = np.expand_dims(trial_data.max(axis=0), axis=0)
-                    trial_data = (trial_data - trial_data_min) / (trial_data_max - trial_data_min)
+                    trial_data = standardize_tensor(trial_data, dim=0)
                 else:
                     raise ValueError
 
@@ -106,11 +105,11 @@ class AMIGOSDataset(Dataset):
             all_labels.append(subject_label)
         all_data = np.concatenate(all_data, axis=0)
         all_labels = np.concatenate(all_labels, axis=0)
-        print(all_data.shape)
-        print(all_labels.shape)
 
         self.data = all_data
         self.labels = all_labels
+        self.idx = np.arange(self.data.shape[0] * self.data.shape[1]).reshape(-1, self.data.shape[1])
+        self.full_shape = self.data[0].shape
 
     def __getitem__(self, item):
         x = self.data[item].astype(np.float32)
@@ -121,7 +120,13 @@ class AMIGOSDataset(Dataset):
         if self.transform is not None:
             x = self.transform(x)
 
-        return torch.from_numpy(x), torch.from_numpy(y)
+        x = torch.from_numpy(x)
+        y = torch.from_numpy(y)
+
+        if self.return_idx:
+            return x, y, torch.from_numpy(self.idx[item].astype(np.long))
+        else:
+            return x, y
 
     def __len__(self):
         return len(self.data)
