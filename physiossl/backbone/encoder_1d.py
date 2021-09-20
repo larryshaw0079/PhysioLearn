@@ -53,8 +53,9 @@ class R1DBlock(nn.Module):
 
 
 class R1DNet(nn.Module):
-    def __init__(self, in_channel, mid_channel, feature_dim, layers=None, kernel_size: Union[int, List[int]] = 7,
-                 stride: Union[int, List[int]] = 1, final_fc=True):
+    def __init__(self, in_channel: int, mid_channel: int, feature_dim: int, layers: List = None,
+                 kernel_size: Union[int, List[int]] = 7,
+                 stride: Union[int, List[int]] = 1, final_fc: bool = True):
         super(R1DNet, self).__init__()
 
         self.final_fc = final_fc
