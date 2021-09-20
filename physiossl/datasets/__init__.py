@@ -1,5 +1,5 @@
 from .amigos import AMIGOS
-from .deap import DEAP
+from .deap import DEAPDataset
 from .isruc import ISRUC
 from .seed import SEED
 from .seed_iv import SEED_IV
