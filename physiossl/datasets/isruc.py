@@ -22,13 +22,14 @@ class ISRUCDataset(Dataset):
     num_subject = 99
     fs = 200
 
-    def __init__(self, data_path, num_epoch, transform=None, patients: List = None, modal='eeg', return_idx=False,
-                 verbose=True, standardize='none', task='stage'):
-        assert isinstance(patients, list)
+    def __init__(self, data_path: str, num_seq: int, subject_list: List = None, modal: str = 'eeg',
+                 return_idx: bool = False,
+                 transform: nn.Module = None, verbose: bool = True, standardize: str = 'none', task: str = 'stage'):
+        assert isinstance(subject_list, list)
 
         self.data_path = data_path
         self.transform = transform
-        self.patients = patients
+        self.subject_list = subject_list
         self.modal = modal
         self.return_idx = return_idx
 
@@ -38,7 +39,7 @@ class ISRUCDataset(Dataset):
         self.data = []
         self.labels = []
 
-        for i, patient in enumerate(patients):
+        for i, patient in enumerate(subject_list):
             data = np.load(os.path.join(data_path, patient))
             if modal == 'eeg':
                 recordings = np.stack([data['F3_A2'], data['C3_A2'], data['F4_A1'], data['C4_A1'],
@@ -70,9 +71,9 @@ class ISRUCDataset(Dataset):
                 print(
                     f'[INFO] Processing the {i + 1}-th patient {patient} [shape: {recordings.shape} - {annotations.shape}] ...')
 
-            recordings = recordings[:(recordings.shape[0] // num_epoch) * num_epoch].reshape(-1, num_epoch,
-                                                                                             *recordings.shape[1:])
-            annotations = annotations[:(annotations.shape[0] // num_epoch) * num_epoch].reshape(-1, num_epoch)
+            recordings = recordings[:(recordings.shape[0] // num_seq) * num_seq].reshape(-1, num_seq,
+                                                                                         *recordings.shape[1:])
+            annotations = annotations[:(annotations.shape[0] // num_seq) * num_seq].reshape(-1, num_seq)
 
             assert recordings.shape[:2] == annotations.shape[:2], f'{patient}: {recordings.shape} - {annotations.shape}'
 
