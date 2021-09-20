@@ -1,4 +1,4 @@
-from .amigos import AMIGOS
+from .amigos import AMIGOSDataset
 from .deap import DEAPDataset
 from .isruc import ISRUC
 from .seed import SEED
