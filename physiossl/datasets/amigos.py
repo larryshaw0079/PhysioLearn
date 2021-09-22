@@ -29,14 +29,15 @@ class AMIGOSDataset(Dataset):
         self.return_idx = return_idx
 
         assert modal in ['eeg', 'pps', 'all']
-
-        files = sorted(os.listdir(data_path))
-        assert len(files) == self.num_subject
-        files = [files[i] for i in subject_list]
+        #
+        # files = sorted(os.listdir(data_path))
+        # assert len(files) == self.num_subject
+        # files = [files[i] for i in subject_list]
 
         all_data = []
         all_labels = []
-        for a_file in tqdm(files):
+
+        for i, a_file in enumerate(subject_list):
             data = sio.loadmat(os.path.join(data_path, a_file))
 
             subject_data = []
