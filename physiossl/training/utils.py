@@ -7,7 +7,7 @@
 import math
 import warnings
 import random
-from typing import List
+from typing import List, Iterable
 
 import torch
 import numpy as np
@@ -40,3 +40,37 @@ def adjust_learning_rate(optimizer: torch.optim.Optimizer, lr: float, epoch: int
 
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
+
+
+def logits_accuracy(output: torch.Tensor, target: torch.Tensor, topk: Iterable = (1,)):
+    """Computes the accuracy over the k top predictions for the specified values of k"""
+    with torch.no_grad():
+        maxk = max(topk)
+        batch_size = target.size(0)
+
+        _, pred = output.topk(maxk, 1, True, True)
+        pred = pred.t()
+        correct = pred.eq(target.view(1, -1).expand_as(pred))
+
+        res = []
+        for k in topk:
+            correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
+            res.append(correct_k.mul_(100.0 / batch_size).item())
+        return res
+
+
+def mask_accuracy(output: torch.Tensor, target_mask: torch.Tensor, topk: Iterable = (1,)):
+    maxk = max(topk)
+    _, pred = output.topk(maxk, 1, True, True)
+
+    zeros = torch.zeros_like(target_mask).long()
+    pred_mask = torch.zeros_like(target_mask).long()
+
+    res = []
+    for k in range(maxk):
+        pred_ = pred[:, k].unsqueeze(1)
+        onehot = zeros.scatter(1, pred_, 1)
+        pred_mask = onehot + pred_mask  # accumulate
+        if k + 1 in topk:
+            res.append(((pred_mask * target_mask).sum(1) >= 1).float().mean(0).item())
+    return res
