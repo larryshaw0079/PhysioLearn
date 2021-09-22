@@ -22,5 +22,12 @@ def cross_validation_splitting(data_path: str, kfold: int = 10, suffix: str = ''
         yield train_subjects, test_subjects
 
 
-def leave_one_out_splitting():
-    pass
+def leave_one_out_splitting(data_path: str, suffix: str = ''):
+    files = list(filter(lambda x: x.endswith(suffix), os.listdir(data_path)))
+    files = np.sort(files)
+
+    loo = LeaveOneOut()
+    print('[INFO] Generated', loo.get_n_splits(files), 'splits...')
+    for i, (train_index, test_index) in enumerate(loo.split(files)):
+        train_subjects, test_subjects = files[train_index].tolist(), files[test_index].tolist()
+        yield train_subjects, test_subjects
