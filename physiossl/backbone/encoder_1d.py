@@ -10,20 +10,13 @@ import torch
 import torch.nn as nn
 
 
-class R1DBlock(nn.Module):
+class ResNetBlock1D(nn.Module):
     """
     The basic block of the 1d convolutional network
-
-    Attributes
-    ----------
-
-    Methods
-    -------
-
     """
 
     def __init__(self, in_channel, out_channel, kernel_size=7, stride=1):
-        super(R1DBlock, self).__init__()
+        super(ResNetBlock1D, self).__init__()
 
         assert kernel_size % 2 == 1
 
@@ -52,11 +45,11 @@ class R1DBlock(nn.Module):
         return self.relu(out)
 
 
-class R1DNet(nn.Module):
+class ResNet1D(nn.Module):
     def __init__(self, in_channel: int, mid_channel: int, feature_dim: int, layers: List = None,
                  kernel_size: Union[int, List[int]] = 7,
                  stride: Union[int, List[int]] = 1, final_fc: bool = True):
-        super(R1DNet, self).__init__()
+        super(ResNet1D, self).__init__()
 
         self.final_fc = final_fc
         self.feature_size = mid_channel * 16
@@ -108,10 +101,10 @@ class R1DNet(nn.Module):
     def __make_layer(self, num_block, in_channel, out_channel, kernel_size, stride):
         layers = []
 
-        layers.append(R1DBlock(in_channel, out_channel, kernel_size, stride))
+        layers.append(ResNetBlock1D(in_channel, out_channel, kernel_size, stride))
 
         for _ in range(num_block):
-            layers.append(R1DBlock(out_channel, out_channel, kernel_size, 1))
+            layers.append(ResNetBlock1D(out_channel, out_channel, kernel_size, 1))
 
         return nn.Sequential(*layers)
 
@@ -129,3 +122,63 @@ class R1DNet(nn.Module):
             x = self.fc(x)
 
         return x
+
+
+class SimpleConvNet(nn.Module):
+    def __init__(self, in_channel: int, feature_dim: int, kernel_size: Union[int, List[int]],
+                 strides: Union[int, List[int]], dropout: float):
+        super(SimpleConvNet, self).__init__()
+
+        if isinstance(kernel_size, int):
+            kernel_size = [kernel_size] * 4
+
+        if isinstance(strides, int):
+            strides = [strides] * 4
+
+        assert len(kernel_size) == len(strides) == 4
+
+        self.feature_dim = feature_dim
+
+        self.conv_block1 = nn.Sequential(
+            nn.Conv1d(in_channel, 32, kernel_size=kernel_size[0],
+                      stride=strides[0], bias=False, padding=kernel_size[0] // 2),
+            nn.BatchNorm1d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool1d(kernel_size=2, stride=2, padding=1),
+            nn.Dropout(dropout)
+        )
+
+        self.conv_block2 = nn.Sequential(
+            nn.Conv1d(32, 64, kernel_size=kernel_size[1], stride=strides[1], bias=False, padding=kernel_size[1] // 2),
+            nn.BatchNorm1d(64),
+            nn.ReLU(inplace=True),
+            nn.MaxPool1d(kernel_size=2, stride=2, padding=1)
+        )
+
+        self.conv_block3 = nn.Sequential(
+            nn.Conv1d(64, 128, kernel_size=kernel_size[2], stride=strides[2], bias=False, padding=kernel_size[2] // 2),
+            nn.BatchNorm1d(128),
+            nn.ReLU(inplace=True),
+            nn.MaxPool1d(kernel_size=2, stride=2, padding=1),
+        )
+
+        self.conv_block4 = nn.Sequential(
+            nn.Conv1d(128, 256, kernel_size=kernel_size[3], stride=strides[3], bias=False, padding=kernel_size[3] // 2),
+            nn.BatchNorm1d(256),
+            nn.ReLU(inplace=True),
+            nn.MaxPool1d(kernel_size=2, stride=2, padding=1),
+        )
+
+        self.avg = nn.AdaptiveAvgPool1d(1)
+        self.fc = nn.Linear(256, feature_dim)
+
+    def forward(self, x):
+        x = self.conv_block1(x)
+        x = self.conv_block2(x)
+        x = self.conv_block3(x)
+        x = self.conv_block4(x)
+
+        x = self.avg(x)
+        x = x.squeeze()
+
+        return self.fc(x)
