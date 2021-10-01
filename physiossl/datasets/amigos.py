@@ -29,15 +29,11 @@ class AMIGOSDataset(Dataset):
         self.return_idx = return_idx
 
         assert modal in ['eeg', 'pps', 'all']
-        #
-        # files = sorted(os.listdir(data_path))
-        # assert len(files) == self.num_subject
-        # files = [files[i] for i in subject_list]
 
         all_data = []
         all_labels = []
 
-        for i, a_file in enumerate(subject_list):
+        for i, a_file in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
             data = sio.loadmat(os.path.join(data_path, a_file))
 
             subject_data = []
@@ -61,7 +57,6 @@ class AMIGOSDataset(Dataset):
                 if np.isnan(trial_data).any():
                     warnings.warn(
                         f"The array of {a_file} - {i} contains {np.sum(np.isnan(trial_data))} NaN of total {np.prod(trial_data.shape)} points, dropped.")
-                    # trial_data[np.isnan(trial_data)] = 0
                     continue
 
                 if modal == 'eeg':

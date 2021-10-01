@@ -39,7 +39,7 @@ class ISRUCDataset(Dataset):
         self.data = []
         self.labels = []
 
-        for i, patient in enumerate(subject_list):
+        for i, patient in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
             data = np.load(os.path.join(data_path, patient))
             if modal == 'eeg':
                 recordings = np.stack([data['F3_A2'], data['C3_A2'], data['F4_A1'], data['C4_A1'],

@@ -37,7 +37,7 @@ class BCICIV2aDataset(Dataset):
         self.data = []
         self.labels = []
 
-        for i, patient in enumerate(subject_list):
+        for i, patient in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
             print(f'[INFO] Processing patient {patient}...')
 
             data = np.load(os.path.join(data_path, patient))

@@ -36,7 +36,7 @@ class DEAPDataset(Dataset):
         all_data = []
         all_labels = []
 
-        for i, a_file in enumerate(subject_list):
+        for i, a_file in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
             data = sio.loadmat(os.path.join(data_path, a_file))
             subject_data = data['data']  # trial x channel x data
             subject_label = data['labels']  # trial x label (valence, arousal, dominance, liking)

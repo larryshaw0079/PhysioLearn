@@ -23,7 +23,7 @@ class SleepEDFDataset(Dataset):
     fs = 100
 
     def __init__(self, data_path: str, num_seq: int, subject_list: List = None, modal='eeg', return_idx: bool = False,
-                 transform: nn.Module = None, verbose: bool = True, standardize: str = 'none'):
+                 transform: nn.Module = None, standardize: str = 'none'):
         assert isinstance(subject_list, list)
         assert modal in ['eeg', 'pps', 'all']
 
@@ -36,9 +36,7 @@ class SleepEDFDataset(Dataset):
         self.data = []
         self.labels = []
 
-        for i, patient in enumerate(subject_list):
-            if verbose:
-                print(f'[INFO] Processing the {i + 1}-th patient {patient}...')
+        for i, patient in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
             data = np.load(os.path.join(data_path, patient))
             if modal == 'eeg':
                 recordings = np.stack([data['eeg_fpz_cz'], data['eeg_pz_oz']], axis=1)

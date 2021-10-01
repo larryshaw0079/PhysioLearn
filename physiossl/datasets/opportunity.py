@@ -34,7 +34,7 @@ class OpportunityUCIDataset(Dataset):
         column_lines = list(filter(lambda x: x.startswith('Column:'), lines))
         columns = [col.split() for col in column_lines]
 
-        for i, patient in enumerate(subject_list):
+        for i, patient in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
             df = pd.read_csv(os.path.join(data_path, patient), header=0, delimiter=' ')
             df.fillna(method='ffill', inplace=True)
             print(df.head(), df.shape)
