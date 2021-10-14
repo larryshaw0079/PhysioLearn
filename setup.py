@@ -28,5 +28,5 @@ setup(
     install_requirements=__parse_requirements('requirements.txt'),
     packages=find_packages(),
     python_requires=">=3.6",
-    license='GPL-3.0 License'
+    license='MIT license'
 )
