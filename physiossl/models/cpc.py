@@ -4,3 +4,10 @@
 @Software: PyCharm
 @Desc    : 
 """
+import torch
+import torch.nn as nn
+
+
+class CPC(nn.Module):
+    def __init__(self):
+        super(CPC, self).__init__()

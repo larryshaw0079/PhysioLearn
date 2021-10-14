@@ -4,3 +4,4 @@ from .deap import DEAPDataset
 from .isruc import ISRUCDataset
 from .opportunity import OpportunityUCIDataset
 from .sleepedf import SleepEDFDataset
+from .wrapper import CombinedTwoDataset, RPDataset, TSDataset

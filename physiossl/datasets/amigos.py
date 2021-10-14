@@ -5,6 +5,7 @@
 @Desc    : 
 """
 import os
+from pathlib import Path
 import warnings
 from typing import List
 
@@ -15,14 +16,14 @@ import torch.nn as nn
 from tqdm.std import tqdm
 from torch.utils.data import Dataset
 
-from .utils import standardize_tensor
+from .utils import minmax_scale, standard_scale
 
 
 class AMIGOSDataset(Dataset):
     num_subject = 40
     fs = 128
 
-    def __init__(self, data_path: str, num_seq: int, subject_list: List, label_dim: int = 0, modal: str = 'eeg',
+    def __init__(self, data_path: str, seq_len: int, subject_list: List[Path], label_dim: int = 0, modal: str = 'eeg',
                  return_idx: bool = False, transform: nn.Module = None, standardize: str = 'none'):
         self.transform = transform
         self.label_dim = label_dim
@@ -33,7 +34,7 @@ class AMIGOSDataset(Dataset):
         all_data = []
         all_labels = []
 
-        for i, a_file in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
+        for i, a_file in enumerate(tqdm(subject_list, desc='::: LOADING AMIGOS DATA ::::')):
             data = sio.loadmat(os.path.join(data_path, a_file))
 
             subject_data = []
@@ -44,8 +45,10 @@ class AMIGOSDataset(Dataset):
 
                 if standardize == 'none':
                     pass
+                elif standardize == 'minmax':
+                    trial_data = minmax_scale(trial_data, dim=0)
                 elif standardize == 'standard':
-                    trial_data = standardize_tensor(trial_data, dim=0)
+                    trial_data = standard_scale(trial_data, dim=0)
                 else:
                     raise ValueError
 
@@ -68,15 +71,15 @@ class AMIGOSDataset(Dataset):
                 else:
                     raise ValueError
 
-                if trial_data.shape[0] % num_seq != 0:
-                    trial_data = trial_data[:trial_data.shape[0] // num_seq * num_seq]
+                if trial_data.shape[0] % seq_len != 0:
+                    trial_data = trial_data[:trial_data.shape[0] // seq_len * seq_len]
 
                 # Standardize
                 # mean_value = np.expand_dims(trial_data.mean(axis=0), axis=0)
                 # std_value = np.expand_dims(trial_data.std(axis=0), axis=0)
                 # trial_data = (trial_data - mean_value) / std_value
 
-                trial_data = trial_data.reshape(trial_data.shape[0] // num_seq, num_seq, *trial_data.shape[1:])
+                trial_data = trial_data.reshape(trial_data.shape[0] // seq_len, seq_len, *trial_data.shape[1:])
 
                 if 0 in trial_data.shape:
                     warnings.warn(f"The array of shape {data['joined_data'][0, i].shape} is too small, dropped.")

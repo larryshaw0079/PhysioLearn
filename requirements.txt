@@ -10,3 +10,4 @@ torch>=1.6
 
 # Utilities
 tqdm
+einops

@@ -14,14 +14,14 @@ import torch.nn as nn
 from tqdm.std import tqdm
 from torch.utils.data import Dataset
 
-from .utils import standardize_tensor
+from .utils import minmax_scale, standard_scale
 
 
 class DEAPDataset(Dataset):
     num_subject = 32
     fs = 128
 
-    def __init__(self, data_path: str, num_seq: int, subject_list: List, label_dim: int = 0, modal: str = 'eeg',
+    def __init__(self, data_path: str, seq_len: int, subject_list: List, label_dim: int = 0, modal: str = 'eeg',
                  return_idx: bool = False, transform: nn.Module = None, standardize: str = 'none'):
         self.label_dim = label_dim
         self.return_idx = return_idx
@@ -36,7 +36,7 @@ class DEAPDataset(Dataset):
         all_data = []
         all_labels = []
 
-        for i, a_file in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
+        for i, a_file in enumerate(tqdm(subject_list, desc='::: LOADING DEAP DATA ::::')):
             data = sio.loadmat(os.path.join(data_path, a_file))
             subject_data = data['data']  # trial x channel x data
             subject_label = data['labels']  # trial x label (valence, arousal, dominance, liking)
@@ -53,20 +53,22 @@ class DEAPDataset(Dataset):
 
             if standardize == 'none':
                 pass
+            elif standardize == 'minmax':
+                subject_data = minmax_scale(subject_data, dim=-1)
             elif standardize == 'standard':
-                subject_data = standardize_tensor(subject_data, dim=-1)
+                subject_data = standard_scale(subject_data, dim=-1)
             else:
                 raise ValueError
 
             subject_data = subject_data.reshape(*subject_data.shape[:2], subject_data.shape[-1] // self.fs,
                                                 self.fs)  # (trial, channel, num_sec, time_len)
             subject_data = np.swapaxes(subject_data, 1, 2)  # (trial, num_sec, channel, time_len)
-            if num_seq == 0:
+            if seq_len == 0:
                 subject_data = np.expand_dims(subject_data, axis=2)
             else:
-                if subject_data.shape[1] % num_seq != 0:
-                    subject_data = subject_data[:, :subject_data.shape[1] // num_seq * num_seq]
-                subject_data = subject_data.reshape(subject_data.shape[0], subject_data.shape[1] // num_seq, num_seq,
+                if subject_data.shape[1] % seq_len != 0:
+                    subject_data = subject_data[:, :subject_data.shape[1] // seq_len * seq_len]
+                subject_data = subject_data.reshape(subject_data.shape[0], subject_data.shape[1] // seq_len, seq_len,
                                                     *subject_data.shape[-2:])
                 # (trial, *, *, channel, time_len)
 
@@ -82,7 +84,7 @@ class DEAPDataset(Dataset):
         all_data = np.concatenate(all_data, axis=0)
         all_labels = np.concatenate(all_labels, axis=0)
 
-        if num_seq == 0:
+        if seq_len == 0:
             all_data = np.squeeze(all_data)
 
         self.data = all_data

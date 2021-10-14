@@ -15,16 +15,16 @@ import torch.nn as nn
 from tqdm.std import tqdm
 from torch.utils.data import Dataset
 
-from .utils import standardize_tensor
+from .utils import minmax_scale, standard_scale
 
 
 class ISRUCDataset(Dataset):
     num_subject = 99
     fs = 200
 
-    def __init__(self, data_path: str, num_seq: int, subject_list: List = None, modal: str = 'eeg',
+    def __init__(self, data_path: str, seq_len: int, subject_list: List = None, modal: str = 'eeg',
                  return_idx: bool = False,
-                 transform: nn.Module = None, verbose: bool = True, standardize: str = 'none', task: str = 'stage'):
+                 transform: nn.Module = None, standardize: str = 'none', task: str = 'stage'):
         assert isinstance(subject_list, list)
 
         self.data_path = data_path
@@ -39,7 +39,7 @@ class ISRUCDataset(Dataset):
         self.data = []
         self.labels = []
 
-        for i, patient in enumerate(tqdm(subject_list, desc='::: LOADING DATA ::::')):
+        for i, patient in enumerate(tqdm(subject_list, desc='::: LOADING ISRUC DATA ::::')):
             data = np.load(os.path.join(data_path, patient))
             if modal == 'eeg':
                 recordings = np.stack([data['F3_A2'], data['C3_A2'], data['F4_A1'], data['C4_A1'],
@@ -62,18 +62,16 @@ class ISRUCDataset(Dataset):
 
             if standardize == 'none':
                 pass
+            elif standardize == 'minmax':
+                recordings = minmax_scale(recordings, dim=-1)
             elif standardize == 'standard':
-                recordings = standardize_tensor(recordings, dim=-1)
+                recordings = standard_scale(recordings, dim=-1)
             else:
                 raise ValueError
 
-            if verbose:
-                print(
-                    f'[INFO] Processing the {i + 1}-th patient {patient} [shape: {recordings.shape} - {annotations.shape}] ...')
-
-            recordings = recordings[:(recordings.shape[0] // num_seq) * num_seq].reshape(-1, num_seq,
+            recordings = recordings[:(recordings.shape[0] // seq_len) * seq_len].reshape(-1, seq_len,
                                                                                          *recordings.shape[1:])
-            annotations = annotations[:(annotations.shape[0] // num_seq) * num_seq].reshape(-1, num_seq)
+            annotations = annotations[:(annotations.shape[0] // seq_len) * seq_len].reshape(-1, seq_len)
 
             assert recordings.shape[:2] == annotations.shape[:2], f'{patient}: {recordings.shape} - {annotations.shape}'
 

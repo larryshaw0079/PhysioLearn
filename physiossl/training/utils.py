@@ -42,6 +42,7 @@ def adjust_learning_rate(optimizer: torch.optim.Optimizer, lr: float, epoch: int
         param_group['lr'] = lr
 
 
+# TODO : to be finished
 def logits_accuracy(output: torch.Tensor, target: torch.Tensor, topk: Iterable = (1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
     with torch.no_grad():
@@ -59,6 +60,7 @@ def logits_accuracy(output: torch.Tensor, target: torch.Tensor, topk: Iterable =
         return res
 
 
+# TODO : to be finished
 def mask_accuracy(output: torch.Tensor, target_mask: torch.Tensor, topk: Iterable = (1,)):
     maxk = max(topk)
     _, pred = output.topk(maxk, 1, True, True)
