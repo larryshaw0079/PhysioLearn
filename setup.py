@@ -18,7 +18,7 @@ with open(os.path.join(root, 'README.md'), 'r', encoding='utf-8') as f:
 
 setup(
     name="physiossl",
-    version="0.1",
+    version="0.0.1a1",
     author="qinfeng xiao",
     author_email="qfxiao@bjtu.edu.cn",
     description="PhysioSSL: A Python Toolbox for Physiological Time-series Representation Learning",
