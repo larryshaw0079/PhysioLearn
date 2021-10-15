@@ -22,17 +22,18 @@ pip install git+https://github.com/larryshaw0079/PhysioSSL
 
 ## Implemented Algorithms
 
-|      | Abbr    | Title | Year | Ref       |
-| ---- | ------- | ----- | ---- | --------- |
-|      | RP      |       |      | [[1]](#1) |
-|      | TS      |       |      | [[1]](#1) |
-|      | CPC     |       |      |           |
-|      | Moco    |       |      |           |
-|      | SimCLR  |       |      |           |
-|      | DPC     |       |      |           |
-|      | TLoss   |       |      |           |
-|      | TNC     |       |      |           |
-|      | CoSleep |       | 2021 |           |
+|      | Abbr    | Title | Year | Ref          |
+| ---- | ------- | ----- | ---- | ------------ |
+|      | TCL     |       |      | [[1]](#ref1) |
+|      | RP      |       |      | [[2]](#ref2) |
+|      | TS      |       |      | [[2]](#ref2) |
+|      | CPC     |       |      |              |
+|      | Moco    |       |      |              |
+|      | SimCLR  |       |      |              |
+|      | DPC     |       |      |              |
+|      | TLoss   |       |      |              |
+|      | TNC     |       |      |              |
+|      | CoSleep |       | 2021 |              |
 
 ## Supported Datasets
 
@@ -55,4 +56,7 @@ pip install git+https://github.com/larryshaw0079/PhysioSSL
 
 ## Reference
 
-> <div id="1">Banville, H., Chehab, O., Hyvarinen, A., Engemann, D., & Gramfort, A. (2020). Uncovering the structure of clinical EEG signals with self-supervised learning. Journal of neural engineering, 10.1088/1741-2552/abca18. Advance online publication. https://doi.org/10.1088/1741-2552/abca18</div>
+> <div id="ref1">
+> [1] Hyvarinen, Aapo and Morioka, Hiroshi,. (2016). Unsupervised Feature Extraction by Time-Contrastive Learning and Nonlinear ICA. Advances in Neural Information Processing Systems.
+> </div>
+> <div id="ref2">[2] Banville, H., Chehab, O., Hyvarinen, A., Engemann, D., & Gramfort, A. (2020). Uncovering the structure of clinical EEG signals with self-supervised learning. Journal of neural engineering, 10.1088/1741-2552/abca18. Advance online publication. https://doi.org/10.1088/1741-2552/abca18</div>
