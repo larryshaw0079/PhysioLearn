@@ -22,18 +22,18 @@ pip install git+https://github.com/larryshaw0079/PhysioSSL
 
 ## Implemented Algorithms
 
-|      | Abbr    | Title | Year | Ref          |
-| ---- | ------- | ----- | ---- | ------------ |
-|      | TCL     |       |      | [[1]](#ref1) |
-|      | RP      |       |      | [[2]](#ref2) |
-|      | TS      |       |      | [[2]](#ref2) |
-|      | CPC     |       |      |              |
-|      | Moco    |       |      |              |
-|      | SimCLR  |       |      |              |
-|      | DPC     |       |      |              |
-|      | TLoss   |       |      |              |
-|      | TNC     |       |      |              |
-|      | CoSleep |       | 2021 |              |
+| Algo    | Title | Year | Ref          |
+| ------- | ----- | ---- | ------------ |
+| TCL     |       |      | [[1]](#ref1) |
+| RP      |       |      | [[2]](#ref2) |
+| TS      |       |      | [[2]](#ref2) |
+| CPC     |       |      |              |
+| Moco    |       |      |              |
+| SimCLR  |       |      |              |
+| DPC     |       |      |              |
+| TLoss   |       |      |              |
+| TNC     |       |      |              |
+| CoSleep |       | 2021 |              |
 
 ## Supported Datasets
 

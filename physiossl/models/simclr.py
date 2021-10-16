@@ -11,3 +11,5 @@ import torch.nn as nn
 class SimCLR(nn.Module):
     def __init__(self):
         super(SimCLR, self).__init__()
+
+        raise NotImplementedError
