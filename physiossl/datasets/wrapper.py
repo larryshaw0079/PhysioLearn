@@ -4,10 +4,7 @@
 @Software: PyCharm
 @Desc    : 
 """
-import einops
-import numpy as np
 from torch.utils.data import Dataset
-from statsmodels.tsa.stattools import adfuller
 
 
 class CombinedTwoDataset(Dataset):
@@ -18,7 +15,9 @@ class CombinedTwoDataset(Dataset):
         self.dataset2 = dataset2
 
     def __getitem__(self, item):
-        return *self.dataset1[item], *self.dataset2[item]
+        items1 = self.dataset1[item]
+        items2 = self.dataset2[item]
+        return *items1, *items2
 
     def __len__(self):
         return len(self.dataset1)

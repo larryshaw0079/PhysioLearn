@@ -18,7 +18,7 @@ with open(os.path.join(root, 'README.md'), 'r', encoding='utf-8') as f:
 
 setup(
     name="physiossl",
-    version="0.0.1a1",
+    version="0.0.1a2",
     author="qinfeng xiao",
     author_email="qfxiao@bjtu.edu.cn",
     description="PhysioSSL: A Python Toolbox for Physiological Time-series Representation Learning",
@@ -26,6 +26,7 @@ setup(
     long_description_content_type='text/markdown',
     url="https://github.com/larryshaw0079/PhysioSSL",
     install_requirements=__parse_requirements('requirements.txt'),
+    install_requires=__parse_requirements('requirements.txt'),
     packages=find_packages(),
     python_requires=">=3.6",
     license='MIT license'

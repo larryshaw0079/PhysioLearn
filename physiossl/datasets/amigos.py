@@ -5,16 +5,16 @@
 @Desc    : 
 """
 import os
-from pathlib import Path
 import warnings
-from typing import List
+from pathlib import Path
+from typing import Union, List
 
 import numpy as np
 import scipy.io as sio
 import torch
 import torch.nn as nn
-from tqdm.std import tqdm
 from torch.utils.data import Dataset
+from tqdm.std import tqdm
 
 from .utils import minmax_scale, standard_scale
 
@@ -23,7 +23,8 @@ class AMIGOSDataset(Dataset):
     num_subject = 40
     fs = 128
 
-    def __init__(self, data_path: str, seq_len: int, subject_list: List[Path], label_dim: int = 0, modal: str = 'eeg',
+    def __init__(self, data_path: str, seq_len: int, subject_list: Union[List[int], List[Path]], label_dim: int = 0,
+                 modal: str = 'eeg',
                  return_idx: bool = False, transform: nn.Module = None, standardize: str = 'none'):
         self.transform = transform
         self.label_dim = label_dim
