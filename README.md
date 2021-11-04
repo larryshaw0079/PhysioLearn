@@ -40,11 +40,25 @@ pip install git+https://github.com/larryshaw0079/PhysioSSL
 
 ## Supported Datasets
 
+`PhysioSSL` includes data loading & processing facilities for various physiological datasets.
+
 ### Sleep Stage Classification
+
+- **SleepEDF**
+- **ISRUC**
 
 ### Emotion Recognition
 
+- **DEAP**
+- **AMIGOS**
+
+### Motor Imagery
+
+- **BCICIV2**
+
 ### Human Activity Recognition
+
+- **Opportunity**
 
 ## Citing
 
@@ -62,4 +76,5 @@ pip install git+https://github.com/larryshaw0079/PhysioSSL
 > <div id="ref1">
 > [1] Hyvarinen, Aapo and Morioka, Hiroshi,. (2016). Unsupervised Feature Extraction by Time-Contrastive Learning and Nonlinear ICA. Advances in Neural Information Processing Systems.
 > </div>
+> 
 > <div id="ref2">[2] Banville, H., Chehab, O., Hyvarinen, A., Engemann, D., & Gramfort, A. (2020). Uncovering the structure of clinical EEG signals with self-supervised learning. Journal of neural engineering, 10.1088/1741-2552/abca18. Advance online publication. https://doi.org/10.1088/1741-2552/abca18</div>
