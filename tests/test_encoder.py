@@ -4,7 +4,6 @@
 @Software: PyCharm
 @Desc    : 
 """
-import torch
 from torchsummary import summary
 
 from physiossl.backbone import resnet_1d, convnet_1d

@@ -7,7 +7,7 @@
 import os
 
 from physiossl.datasets import (
-    AMIGOSDataset, BCICIV2aDataset, DEAPDataset, ISRUCDataset, OpportunityUCIDataset, SleepEDFDataset
+    SleepEDFDataset
 )
 
 

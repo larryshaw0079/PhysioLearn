@@ -96,3 +96,7 @@ def permutation(x, max_segments=5, seg_mode="random"):
         else:
             ret[i] = pat
     return torch.from_numpy(ret)
+
+
+def subsequence(x: np.ndarray, seq_len: int):
+    pass

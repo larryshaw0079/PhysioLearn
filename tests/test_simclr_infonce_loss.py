@@ -6,7 +6,7 @@
 """
 import torch
 
-from physiossl.learning import SimCLRInfoNCELoss
+from physiossl.criterion import SimCLRInfoNCELoss
 
 
 def test_forward():
