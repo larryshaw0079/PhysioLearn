@@ -5,10 +5,9 @@
 @Desc    : 
 """
 import abc
-from typing import List, Union, Dict, Any, Tuple
+from typing import List, Union, Dict, Any
 
 import numpy as np
-import torch
 
 from .functional import (
     random_jitter,
@@ -166,3 +165,22 @@ class Perturbation(Transformation):
 
             x['mid'] = out
             return x
+
+
+class Subsequence(Transformation):
+    def __init__(self, seq_len: int):
+        super(Subsequence, self).__init__()
+
+    def __call__(self, x: np.ndarray):
+        pass
+
+
+class BinaryEmotion(Transformation):
+    def __init__(self, label_dim: int, threshold: float):
+        super(BinaryEmotion, self).__init__()
+
+        self.label_dim = label_dim
+        self.threshold = threshold
+
+    def __call__(self, y: np.ndarray):
+        pass

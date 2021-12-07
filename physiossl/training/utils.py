@@ -5,12 +5,12 @@
 @Desc    : 
 """
 import math
-import warnings
 import random
+import warnings
 from typing import List, Iterable
 
-import torch
 import numpy as np
+import torch
 
 
 def setup_seed(seed: int):
@@ -27,7 +27,7 @@ def setup_seed(seed: int):
 
 def adjust_learning_rate(optimizer: torch.optim.Optimizer, lr: float, epoch: int, total_epochs: int, lr_schedule: List,
                          method: str = 'lambda'):
-    """Decay the learning rate based on schedule"""
+    """Decay the criterion rate based on schedule"""
     assert method in ['lambda', 'cos']
 
     if method == 'cos':  # cosine lr schedule
