@@ -6,7 +6,7 @@ matplotlib
 
 # ML/DL
 scikit-learn>=0.22.1
-torch>=1.6
+torch>=1.9
 pyadts
 
 # Utilities

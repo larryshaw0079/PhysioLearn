@@ -173,3 +173,14 @@ class Subsequence(Transformation):
 
     def __call__(self, x: np.ndarray):
         pass
+
+
+class BinaryEmotion(Transformation):
+    def __init__(self, label_dim: int, threshold: float):
+        super(BinaryEmotion, self).__init__()
+
+        self.label_dim = label_dim
+        self.threshold = threshold
+
+    def __call__(self, y: np.ndarray):
+        pass

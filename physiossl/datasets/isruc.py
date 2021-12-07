@@ -5,20 +5,19 @@
 @Desc    : 
 """
 import os
-import warnings
 from typing import List
 
 import numpy as np
-import scipy.io as sio
 import torch
 import torch.nn as nn
-from tqdm.std import tqdm
 from torch.utils.data import Dataset
+from tqdm.std import tqdm
 
 from .utils import minmax_scale, standard_scale
 
 
 class ISRUCDataset(Dataset):
+    eeg_channels = ['F3_A2', 'C3_A2', 'F4_A1', 'C4_A1', 'O1_A2', 'O2_A1']
     num_subject = 99
     fs = 200
 

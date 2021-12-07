@@ -6,13 +6,22 @@
 """
 from typing import Union, List
 
-import torch
 import torch.nn as nn
 
 
 class MLP(nn.Module):
     def __init__(self, feature_dim: int, num_class: int, hidden_dim: Union[int, List[int]] = None, num_layers: int = 2,
                  norm: bool = False, dropout: float = 0.0):
+        """
+
+        Args:
+            feature_dim ():
+            num_class ():
+            hidden_dim ():
+            num_layers ():
+            norm ():
+            dropout ():
+        """
         super(MLP, self).__init__()
 
         if isinstance(hidden_dim, int):
