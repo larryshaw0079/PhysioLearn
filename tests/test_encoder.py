@@ -6,7 +6,7 @@
 """
 from torchsummary import summary
 
-from physiossl.backbone import resnet_1d, convnet_1d, TransformerEncoder
+from physiolearn.backbone import resnet_1d, convnet_1d, TransformerEncoder
 
 
 def test_resnet_1d():

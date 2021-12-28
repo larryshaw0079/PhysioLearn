@@ -11,8 +11,8 @@ import numpy as np
 import scipy.io as sio
 import torch
 import torch.nn as nn
-from tqdm.std import tqdm
 from torch.utils.data import Dataset
+from tqdm.std import tqdm
 
 from .utils import minmax_scale, standard_scale
 

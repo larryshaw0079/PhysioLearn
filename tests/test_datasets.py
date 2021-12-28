@@ -6,7 +6,7 @@
 """
 import os
 
-from physiossl.datasets import (
+from physiolearn.datasets import (
     SleepEDFDataset
 )
 

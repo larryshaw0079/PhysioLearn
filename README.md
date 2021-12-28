@@ -1,4 +1,4 @@
-# PhysioSSL: A Python Toolbox for Physiological Time-series Representation Learning
+# PhysioSSL: A Python Toolbox for Physiological Time-series Deep Learning
 
 <div align=center><img src="https://i.loli.net/2021/10/03/32AUGkZcoeORWij.png" width=25% height=25%/></div>
 
@@ -9,7 +9,7 @@
 Install from PyPi:
 
 ```shell
-pip install physiossl
+pip install physiolearn
 ```
 
 or install via the GitHub link:

@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from physiossl.dist.utils import is_distributed_enabled
+from physiolearn.dist.utils import is_distributed_enabled
 
 
 class Moco(nn.Module):

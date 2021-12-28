@@ -10,8 +10,8 @@ import torch.nn as nn
 
 
 class MLP(nn.Module):
-    def __init__(self, feature_dim: int, num_class: int, hidden_dim: Union[int, List[int]] = None, num_layers: int = 2,
-                 norm: bool = False, dropout: float = 0.0):
+    def __init__(self, feature_dim: int, num_class: int, hidden_dim: Union[int, List[int]] = None, norm: bool = False,
+                 dropout: float = 0.0):
         """
 
         Args:
@@ -47,6 +47,7 @@ class MLP(nn.Module):
                 layers.append(nn.ReLU(inplace=True))
 
             layers.append(nn.Linear(hidden_dim[-1], num_class))
+            self.layers = nn.Sequential(*layers)
 
     def forward(self, x):
         return self.layers(x)

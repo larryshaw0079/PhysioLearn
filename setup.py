@@ -17,11 +17,11 @@ with open(os.path.join(root, 'README.md'), 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name="physiossl",
+    name="physiolearn",
     version="0.0.1a2",
     author="qinfeng xiao",
     author_email="qfxiao@bjtu.edu.cn",
-    description="PhysioSSL: A Python Toolbox for Physiological Time-series Representation Learning",
+    description="PhysioLearn: A Python Toolbox for Physiological Time-series Deep Learning",
     long_description=long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/larryshaw0079/PhysioSSL",

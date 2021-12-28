@@ -4,7 +4,6 @@
 @Software: PyCharm
 @Desc    : 
 """
-import requests
 
 
 

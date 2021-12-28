@@ -4,9 +4,7 @@
 @Software: PyCharm
 @Desc    : 
 """
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class TSTCC(nn.Module):

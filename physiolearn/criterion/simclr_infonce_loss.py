@@ -11,7 +11,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from physiossl.dist.utils import gather_tensor_sync, is_distributed_enabled
+from physiolearn.dist.utils import gather_tensor_sync, is_distributed_enabled
 
 
 class SimCLRInfoNCELoss(nn.Module):
